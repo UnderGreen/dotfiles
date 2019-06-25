@@ -32,7 +32,7 @@
 (setq auto-insert-alist
       '(((sh-mode . "Shell script") nil
          "#!/usr/bin/env bash\n"
-         "# -*- mode: sh; -*-\n\n"
+         "# -*- mode: bash; -*-\n\n"
          "# File: " (file-name-nondirectory buffer-file-name) "\n"
          "# Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n"
          "# Description: " _ "\n\n"
@@ -96,6 +96,10 @@
 
 ;; go-mode - mode for editing Go code
 (use-package go-mode
+  :ensure t)
+
+;; groovy-mode - major mode for Groovy source files
+(use-package groovy-mode
   :ensure t)
 
 ;; diminish - hiding or abbreviation of the mode line displays (lighters) of minor-modes

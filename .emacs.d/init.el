@@ -31,12 +31,13 @@
  '(git-gutter:modified-sign "~")
  '(package-selected-packages
    (quote
-    (go-eldoc flymake-go company-go yasnippet yaml-mode undo-tree tabbar counsel rainbow-delimiters projectile magit lsp-ui flycheck-yamllint flycheck dockerfile-mode diminish go-mode git-gutter company-lsp company anzu ace-window solarized-theme use-package))))
+    (groovy-mode go-eldoc flymake-go company-go yasnippet yaml-mode undo-tree tabbar counsel rainbow-delimiters projectile magit lsp-ui flycheck-yamllint flycheck dockerfile-mode diminish go-mode git-gutter company-lsp company anzu ace-window solarized-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#002b36" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 130 :width normal :foundry "SRC" :family "Hack"))))
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 2.0)))))
 
 (setq gc-cons-threshold (* 2 1024 1024))
