@@ -1,0 +1,45 @@
+[user]
+    name = Sergei Antipov
+    email = greendayonfire@gmail.com
+	signingkey = B167B87787407B3A
+[color]
+    diff = auto
+    status = auto
+    interactive = auto
+    branch = auto
+[alias]
+    co = checkout
+    pom = push origin master
+    st = status
+    br = branch
+    brs = for-each-ref --sort=committerdate --format='%(refname:short) * %(authorname) * %(committerdate:relative)' refs/remotes/ | column -t -s '*'
+    ci = commit
+    dh = diff HEAD
+    dc = diff --cached
+    dm = log --no-merges master..
+    nmerge = merge --no-ff
+    unstage = reset HEAD --
+    rsh = reset --hard
+    clh = clean -fdx
+    rollback = reset --soft HEAD~1
+    last = log -1 HEAD
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=relative --branches
+    smb = submodule update --init --recursive
+[log]
+    date = local
+[core]
+    filemode = false
+    excludesfile = ~/.gitignore
+    autocrlf = input
+[push]
+    default = simple
+[merge]
+	tool = meld
+[diff]
+	submodule = log
+[credential]
+	helper = cache --timeout=3600
+[commit]
+	gpgsign = true
+[gpg]
+	program = /usr/bin/gpg2
