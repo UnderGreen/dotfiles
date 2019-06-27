@@ -252,5 +252,9 @@
     (yas-global-mode 1))
   :diminish yas-minor-mode)
 
+;; yasnippet-snippets - official snippet collection
+(use-package yasnippet-snippets
+  :ensure t)
+
 (provide 'base-extensions)
 ;;; base-extensions.el ends here
