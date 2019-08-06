@@ -122,6 +122,7 @@
   :defer t
   :init
   (progn
+    (setq flycheck-yamllintrc "/home/greenday/yamllint/config")
     (eval-after-load 'flycheck
       '(add-hook 'flycheck-mode-hook 'flycheck-yamllint-setup))))
 
@@ -132,7 +133,7 @@
   (progn
     (setq lsp-prefer-flymake nil) ;; t(flymake), nil(lsp-ui), or :none
     (setq lsp-enable-indentation t))
-  :commands lsp)
+  :commands lsp lsp-deferred)
 
 ;; lsp-ui - contains all the higher level UI modules of lsp-mode, like flycheck support and code lenses
 (use-package lsp-ui

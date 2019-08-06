@@ -16,7 +16,7 @@
   "Format buffer before save file."
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
 
-(add-hook 'go-mode-hook #'lsp)
+(add-hook 'go-mode-hook #'lsp-deferred)
 (add-hook 'go-mode-hook 'format-buffer-before-save-go)
 
 (defun hook-minibuffer-setup ()

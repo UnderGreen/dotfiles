@@ -31,7 +31,7 @@
  '(git-gutter:modified-sign "~")
  '(package-selected-packages
    (quote
-    (yasnippet-snippets groovy-mode go-eldoc flymake-go company-go yasnippet yaml-mode undo-tree tabbar counsel rainbow-delimiters projectile magit lsp-ui flycheck-yamllint flycheck dockerfile-mode diminish go-mode git-gutter company-lsp company anzu ace-window solarized-theme use-package))))
+    (ztree dictionary yasnippet-snippets groovy-mode go-eldoc flymake-go company-go yasnippet yaml-mode undo-tree tabbar counsel rainbow-delimiters projectile magit lsp-ui flycheck-yamllint flycheck dockerfile-mode diminish go-mode git-gutter company-lsp company anzu ace-window solarized-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
