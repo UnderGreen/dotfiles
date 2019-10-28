@@ -18,5 +18,5 @@ fi
 
 # set environment variables
 export GOPATH="${HOME}/go"
-export GOROOT="/usr/local/go"
-export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:/usr/local/go/bin:$PATH"
+export GOROOT="/usr/lib/go-1.12/"
+export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:/usr/lib/go-1.12/bin:$PATH"

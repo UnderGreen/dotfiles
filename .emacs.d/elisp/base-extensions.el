@@ -69,6 +69,18 @@
   :bind ("M-s" . avy-goto-char)
   :diminish ivy-mode)
 
+;; clojure-mode - major mode for work with Clojure files
+(use-package clojure-mode
+  :ensure t
+  :config
+  (progn
+    (eval-after-load 'clojure-mode
+      '(add-hook 'clojure-mode-hook 'subword-mode))))
+
+;; clojure-mode-extra-font-locking - extra syntax highlighting for clojure
+(use-package clojure-mode-extra-font-locking
+  :ensure t)
+
 ;; company - Modular in-buffer completion framework
 (use-package company
   :ensure t
@@ -82,17 +94,6 @@
 (use-package company-lsp
   :ensure t
   :commands company-lsp)
-
-;; git-gutter - port of GitGutter which is a plugin of Sublime Text.
-(use-package git-gutter
-  :ensure t
-  :config
-  (progn
-    (custom-set-variables
-     '(git-gutter:modified-sign "~")
-     '(git-gutter:added-sign "+")
-     '(git-gutter:deleted-sign "-")))
-  :diminish git-gutter-mode)
 
 ;; go-mode - mode for editing Go code
 (use-package go-mode
@@ -110,7 +111,7 @@
 (use-package dockerfile-mode
   :ensure t)
 
-;; flycheck - moder on-the-fly syntax checker
+;; flycheck - modern on-the-fly syntax checker
 (use-package flycheck
   :ensure t
   :config (global-flycheck-mode t)
@@ -125,6 +126,10 @@
     (setq flycheck-yamllintrc "/home/greenday/yamllint/config")
     (eval-after-load 'flycheck
       '(add-hook 'flycheck-mode-hook 'flycheck-yamllint-setup))))
+
+;; forge - work with Github/Gitlab from the comfort of Magit
+(use-package forge
+  :after magit)
 
 ;; lsp-mode - Language Server Protocol Support for Emacs
 (use-package lsp-mode
@@ -174,6 +179,13 @@
 ;; swiper - Isearch with an overview. Oh, man!
 (use-package counsel
   :ensure t)
+
+;; pdf-tools - view and modify PDF files
+(use-package pdf-tools
+  :ensure t
+  :config
+  (progn
+    (pdf-loader-install)))
 
 (use-package swiper
   :ensure t
@@ -256,6 +268,13 @@
 ;; yasnippet-snippets - official snippet collection
 (use-package yasnippet-snippets
   :ensure t)
+
+;; wgrep - Writable grep buffer and apply the changes to files
+(use-package wgrep
+  :ensure t
+  :config
+  (progn
+    (setq wgrep-auto-save-buffer t)))
 
 (provide 'base-extensions)
 ;;; base-extensions.el ends here

@@ -43,3 +43,5 @@
 	gpgsign = true
 [gpg]
 	program = /usr/bin/gpg2
+[github]
+	user = UnderGreen

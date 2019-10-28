@@ -28,6 +28,7 @@
 
 
 ;;; Useful defaults
+(setq auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc")) ; Use encrypted auth source first
 (setq confirm-kill-emacs 'y-or-n-p) ; Confirm to close emacs
 (setq-default cursor-type 'box)   ; Line-style cursor similar to other text editors
 (setq inhibit-startup-screen t)   ; Disable startup screen
@@ -39,8 +40,6 @@
 (setq visible-bell t)             ; Blink screen instead of audio bell
 (setq debug-on-error t)           ; Show debug output on error
 (setq load-prefer-newer t)        ; Load whichever version of the file is newest(.el or .elc)
-(setq user-full-name "Sergei Antipov")
-(setq user-mail-address "greendayonfire@gmail.com")
 (setq case-fold-search t)         ; Case insensitive search
 (setq kill-whole-line t)          ; C-k at the beginning of a line kills the entire line including the following newline
 (setq require-final-newline t)    ; Put a newline at the end if there isn’t already one there

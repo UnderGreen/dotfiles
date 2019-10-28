@@ -5,7 +5,7 @@
 export GOPATH=$HOME/go
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$GOPATH/bin:/usr/local/bin:/usr/local/go/bin:$PATH
+export PATH=$HOME/bin:$GOPATH/bin:/usr/local/bin:/usr/lib/go-1.12/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/greenday/.oh-my-zsh"
@@ -107,11 +107,8 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ikubectl="kubectl --insecure-skip-tls-verify"
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/usr/lib64/google-cloud-sdk/path.zsh.inc' ]; then . '/usr/lib64/google-cloud-sdk/path.zsh.inc'; fi
-
 # The next line enables shell command completion for gcloud.
-if [ -f '/usr/share/google-cloud-sdk/completion.zsh.inc' ]; then . '/usr/share/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/snap/google-cloud-sdk/current/completion.zsh.inc' ]; then . '/snap/google-cloud-sdk/current//completion.zsh.inc'; fi
 
 # Enable helm completion
 if [ -f "$HOME/.helm.completion.inc" ]; then . "$HOME/.helm.completion.inc"; fi
