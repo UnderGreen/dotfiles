@@ -1,3 +1,7 @@
 {{- $email := promptString "email" -}}
+{{- $gpg_path := promptString "gpg_path" -}}
+{{- $pinentry_path := promptString "pinentry_path" -}}
 [data]
     email = "{{ $email }}"
+    gpg_path = "{{ $gpg_path }}"
+    pinentry_path = "{{ $pinentry_path }}"
