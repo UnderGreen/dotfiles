@@ -52,22 +52,51 @@
   (require 'use-package))
 
 (setq vc-follow-symlinks 'ask)
+(defconst *is-a-mac* (eq system-type 'darwin))
 
 (use-package emacs
   :config
-  (setq frame-title-format '("%b"))
+  (setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
   (setq ring-bell-function 'ignore)
   (defalias 'yes-or-no-p 'y-or-n-p)
+  (setq use-file-dialog nil)
+  (setq use-dialog-box nil)
+  (setq inhibit-startup-screen t)
+  ;; maximize emacs on Mac OS X
+  (when *is-a-mac*
+    (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
-  (defun gd/setup-frame ()
-    (interactive)
-    (when (display-graphic-p) 
-     (set-face-attribute 'default nil :font "Hack Nerd Font-14")))
+  (defun gd/disable-toolbars()
+    (when (fboundp 'tool-bar-mode)
+      (tool-bar-mode -1))
+    (when (fboundp 'set-scroll-bar-mode)
+      (set-scroll-bar-mode nil))
+    (if *is-a-mac*
+	(add-hook 'after-make-frame-functions
+		  (lambda (frame)
+                    (unless (display-graphic-p frame)
+                      (set-frame-parameter frame 'menu-bar-lines 0))))
+      (when (fboundp 'menu-bar-mode)
+	(menu-bar-mode -1))))
 
-  :hook ((kill-emacs-hook . package-quickstart-refresh)
-	 (after-make-frame-functions . (lambda (frame)
-					(select-frame frame)
-					(gd/setup-frame)))))
+  (defun gd/set-default-face()
+      (interactive)
+      (set-face-attribute 'default nil :font "Hack Nerd Font-14")
+      (when *is-a-mac*
+	  (set-face-attribute 'default nil :font "Hack Nerd Font-16")))
+  (if (daemonp)
+    (add-hook 'after-make-frame-functions
+		(lambda (frame)
+		  (select-frame frame)
+		  (gd/set-default-face))))
+  (gd/set-default-face)
+  (gd/disable-toolbars)
+
+  :hook ((kill-emacs-hook . package-quickstart-refresh)))
+
 
 (use-package diminish
   :ensure
@@ -163,7 +192,7 @@
 
 (use-package counsel
   :ensure t
-  :diminish
+  :diminish ivy-mode
   :config
   (setq ivy-use-virtual-buffers t)
 
@@ -173,4 +202,7 @@
 	 ("\C-r" . 'swiper))
   :hook ((after-init-hook . ivy-mode)
          (ivy-occur-mode-hook . hl-line-mode)))
+
+(use-package eldoc
+  :diminish)
 ;;; init.el ends here
