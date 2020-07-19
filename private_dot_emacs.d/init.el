@@ -65,6 +65,9 @@
   (setq use-file-dialog nil)
   (setq use-dialog-box nil)
   (setq inhibit-startup-screen t)
+  ;; Revert (update) buffers automatically when underlying files are changed externally.
+  (global-auto-revert-mode t)
+  (setq confirm-kill-emacs 'y-or-n-p)      ; y and n instead of yes and no when quitting
   ;; maximize emacs on Mac OS X
   (when *is-a-mac*
     (add-to-list 'default-frame-alist '(fullscreen . maximized)))
@@ -97,9 +100,15 @@
 
   :hook ((kill-emacs-hook . package-quickstart-refresh)))
 
+(when *is-a-mac*
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-initialize))))
 
 (use-package diminish
-  :ensure
+  :ensure t
   :after use-package)
 
 (use-package cus-edit
