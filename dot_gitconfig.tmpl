@@ -43,7 +43,7 @@
 [commit]
     gpgsign = true
 [gpg]
-    program = {{ .gpg_path }}
+    program = {{ if eq .chezmoi.os "darwin" }}/usr/local/bin/gpg{{ else }}/usr/bin/gpg{{ end }}
 [github]
     user = UnderGreen
 [pull]

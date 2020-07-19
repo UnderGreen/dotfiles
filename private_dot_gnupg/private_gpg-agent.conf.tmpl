@@ -2,4 +2,4 @@ default-cache-ttl 10800
 max-cache-ttl 10800
 default-cache-ttl-ssh 10800
 max-cache-ttl-ssh 10800
-pinentry-program {{ .pinentry_path }}
+pinentry-program {{ if eq .chezmoi.os "darwin" }}/usr/local/bin/pinentry-mac{{ else }}/usr/bin/pinentry-qt{{ end }}
