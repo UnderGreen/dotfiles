@@ -107,6 +107,20 @@
     (when (memq window-system '(mac ns))
       (exec-path-from-shell-initialize))))
 
+(use-package tramp
+  :config
+  (setq tramp-verbose 6)
+  (setq tramp-terminal-type "tramp")
+;  (setq tramp-use-ssh-controlmaster-options nil)
+  (defun add-ssh-agent-to-tramp ()
+  (cl-pushnew '("-A")
+              (cadr (assoc 'tramp-login-args
+                           ; if on Windows using Putty with Pageant,
+                           ; replace "ssh" with "plink"
+                           (assoc "ssh" tramp-methods)))
+              :test #'equal)))
+;  (add-ssh-agent-to-tramp))
+
 (use-package diminish
   :ensure t
   :after use-package)
