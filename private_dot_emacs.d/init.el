@@ -78,23 +78,23 @@
     (when (fboundp 'set-scroll-bar-mode)
       (set-scroll-bar-mode nil))
     (if *is-a-mac*
-	(add-hook 'after-make-frame-functions
-		  (lambda (frame)
+        (add-hook 'after-make-frame-functions
+                  (lambda (frame)
                     (unless (display-graphic-p frame)
                       (set-frame-parameter frame 'menu-bar-lines 0))))
       (when (fboundp 'menu-bar-mode)
-	(menu-bar-mode -1))))
+        (menu-bar-mode -1))))
 
   (defun gd/set-default-face()
       (interactive)
       (set-face-attribute 'default nil :font "Hack Nerd Font-14")
       (when *is-a-mac*
-	  (set-face-attribute 'default nil :font "Hack Nerd Font-16")))
+          (set-face-attribute 'default nil :font "Hack Nerd Font-18")))
   (if (daemonp)
     (add-hook 'after-make-frame-functions
-		(lambda (frame)
-		  (select-frame frame)
-		  (gd/set-default-face))))
+                (lambda (frame)
+                  (select-frame frame)
+                  (gd/set-default-face))))
   (gd/set-default-face)
   (gd/disable-toolbars)
 
@@ -109,11 +109,21 @@
 
 (use-package tramp
   :config
-  (setq tramp-terminal-type "tramp"))
+  (setq tramp-terminal-type "tramp")
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (add-to-list 'tramp-remote-path "~/bin")
+  (add-to-list 'tramp-remote-path "~/go/bin")
+  (add-to-list 'tramp-remote-path "/usr/lib/go-1.13/bin"))
 
 (use-package diminish
   :ensure t
   :after use-package)
+
+;; setup sanityinc tomorrow theme
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t
+  :init
+  (load-theme 'sanityinc-tomorrow-night t))
 
 (use-package cus-edit
   :config
@@ -125,7 +135,7 @@
   (load custom-file))
 
 (use-package recentf
-  :config
+  :init
   (setq recentf-save-file "~/.emacs.d/recentf")
   (setq recentf-max-saved-items 200)
   (setq recentf-exclude '(".gz" ".xz" ".zip" "/elpa/" "/ssh:" "/sudo:"))
@@ -147,7 +157,8 @@
   (setq delete-old-versions t)
   (setq kept-new-versions 6)
   (setq kept-old-versions 2)
-  (setq create-lockfiles nil))
+  (setq create-lockfiles nil)
+  (setq show-trailing-whitespace t))
 
 (use-package magit
   :ensure
@@ -178,13 +189,43 @@
   :ensure t
   :config
   (progn
-    (setq lsp-prefer-flymake t) ;; t(flymake), nil(lsp-ui), or :none
     (setq lsp-enable-indentation t)
-    (setq lsp-keymap-prefix "C-c l"))
+    (setq lsp-keymap-prefix "C-c l")
+    (setq lsp-log-io 1))
+  (lsp-register-client
+    (make-lsp-client :new-connection (lsp-tramp-connection "~/go/bin/gopls")
+                     :major-modes '(go-mode)
+                     :remote? t
+                     :server-id 'gopls-remote))
 
-  :hook ((go-mode-hook . 'lsp-deferred)
-	 (before-save-hook . 'lsp-format-buffer))
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+  :hook ((go-mode-hook . lsp-deferred)
+         (before-save-hook . 'lsp-go-install-save-hooks))
   :commands lsp lsp-deferred)
+
+;; Optional - provides fancier overlays.
+(use-package lsp-ui
+  :ensure t
+  :requires lsp-mode flycheck
+  :commands lsp-ui-mode)
+
+;; Company mode is a standard completion package that works well with lsp-mode.
+(use-package company
+  :ensure t
+  :config
+  ;; Optionally enable completion-as-you-type behavior.
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1))
+
+;; flycheck configuration
+(use-package flycheck
+  :ensure t
+  :config
+  (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+  :hook (prog-mode-hook . global-flycheck-mode))
 
 ;; projectile - project interaction library
 (use-package projectile
@@ -210,9 +251,9 @@
   (setq ivy-use-virtual-buffers t)
 
   :bind (("M-x" . 'counsel-M-x)
-	 ("C-x C-f" . 'counsel-find-file)
-	 ("\C-s" . 'swiper)
-	 ("\C-r" . 'swiper))
+         ("C-x C-f" . 'counsel-find-file)
+         ("\C-s" . 'swiper)
+         ("\C-r" . 'swiper))
   :hook ((after-init-hook . ivy-mode)
          (ivy-occur-mode-hook . hl-line-mode)))
 
