@@ -61,6 +61,8 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
   (setq ring-bell-function 'ignore)
+  (setq read-process-output-max (* 1024 1024))
+  (setq gc-cons-threshold (* 10 1024 1024))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (setq use-file-dialog nil)
   (setq use-dialog-box nil)
@@ -96,9 +98,7 @@
                   (select-frame frame)
                   (gd/set-default-face))))
   (gd/set-default-face)
-  (gd/disable-toolbars)
-
-  :hook ((kill-emacs-hook . package-quickstart-refresh)))
+  (gd/disable-toolbars))
 
 (when *is-a-mac*
   (use-package exec-path-from-shell
@@ -110,10 +110,11 @@
 (use-package tramp
   :config
   (setq tramp-terminal-type "tramp")
-  (setq tramp-use-ssh-controlmaster-options nil)
+  ;;(setq tramp-use-ssh-controlmaster-options nil)
   (add-to-list 'tramp-remote-path "~/bin")
   (add-to-list 'tramp-remote-path "~/go/bin")
   (add-to-list 'tramp-remote-path "/usr/lib/go-1.13/bin"))
+  ;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 (use-package diminish
   :ensure t
@@ -149,6 +150,7 @@
   (save-place-mode 1))
 
 (use-package emacs
+  :ensure nil
   :config
   (setq backup-directory-alist
         '(("." . "~/.emacs.d/backup/")))
@@ -159,6 +161,13 @@
   (setq kept-old-versions 2)
   (setq create-lockfiles nil)
   (setq show-trailing-whitespace t))
+
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :config
+  (which-key-mode)
+  (which-key-setup-minibuffer))
 
 (use-package magit
   :ensure
@@ -191,9 +200,12 @@
   (progn
     (setq lsp-enable-indentation t)
     (setq lsp-keymap-prefix "C-c l")
-    (setq lsp-log-io 1))
+    (setq lsp-enable-snippet nil)
+    (setq lsp-prefer-capf t)
+    (setq lsp-enable-file-watchers nil))
+  
   (lsp-register-client
-    (make-lsp-client :new-connection (lsp-tramp-connection "~/go/bin/gopls")
+    (make-lsp-client :new-connection (lsp-tramp-connection "gopls")
                      :major-modes '(go-mode)
                      :remote? t
                      :server-id 'gopls-remote))
@@ -218,7 +230,7 @@
   :config
   ;; Optionally enable completion-as-you-type behavior.
   (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 1))
+  (setq company-minimum-prefix-length 2))
 
 ;; flycheck configuration
 (use-package flycheck
@@ -230,9 +242,12 @@
 ;; projectile - project interaction library
 (use-package projectile
   :ensure t
+  :diminish projectile-mode
   :config
   (setq projectile-completion-system 'ivy)
+  (setq projectile-track-known-projects-automatically nil)
 
+  :hook (after-init-hook . projectile-mode)
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
