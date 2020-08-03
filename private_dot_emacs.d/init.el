@@ -160,7 +160,13 @@
   (setq kept-new-versions 6)
   (setq kept-old-versions 2)
   (setq create-lockfiles nil)
-  (setq show-trailing-whitespace t))
+  (setq show-trailing-whitespace t)
+  (delete-selection-mode 1)
+
+  (when (fboundp 'electric-pair-mode)
+    (add-hook 'after-init-hook 'electric-pair-mode))
+
+  :hook (after-init-hook . electric-indent-mode))
 
 (use-package which-key
   :ensure t
@@ -227,10 +233,13 @@
 ;; Company mode is a standard completion package that works well with lsp-mode.
 (use-package company
   :ensure t
+  :diminish company-mode
   :config
   ;; Optionally enable completion-as-you-type behavior.
   (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 2))
+  (setq company-minimum-prefix-length 2)
+
+  :hook (after-init-hook . global-company-mode))
 
 ;; flycheck configuration
 (use-package flycheck
