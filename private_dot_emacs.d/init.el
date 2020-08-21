@@ -89,7 +89,7 @@
 
   (defun gd/set-default-face()
       (interactive)
-      (set-face-attribute 'default nil :font "Hack Nerd Font-14")
+      (set-face-attribute 'default nil :font "Hack Nerd Font-15")
       (when *is-a-mac*
           (set-face-attribute 'default nil :font "Hack Nerd Font-18")))
   (if (daemonp)
@@ -203,12 +203,11 @@
 (use-package lsp-mode
   :ensure t
   :config
-  (progn
-    (setq lsp-enable-indentation t)
-    (setq lsp-keymap-prefix "C-c l")
-    (setq lsp-enable-snippet nil)
-    (setq lsp-prefer-capf t)
-    (setq lsp-enable-file-watchers nil))
+  (setq lsp-enable-indentation t)
+  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+  (setq lsp-enable-snippet nil)
+  (setq lsp-prefer-capf t)
+  (setq lsp-enable-file-watchers nil)
   
   (lsp-register-client
     (make-lsp-client :new-connection (lsp-tramp-connection "gopls")
@@ -221,7 +220,10 @@
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
   :hook ((go-mode-hook . lsp-deferred)
-         (before-save-hook . 'lsp-go-install-save-hooks))
+         (go-mode-hook . 'lsp-go-install-save-hooks)
+	 (lsp-mode-hook . (lambda ()
+			    (let ((lsp-keymap-prefix "C-c l"))
+                              (lsp-enable-which-key-integration)))))
   :commands lsp lsp-deferred)
 
 ;; Optional - provides fancier overlays.
