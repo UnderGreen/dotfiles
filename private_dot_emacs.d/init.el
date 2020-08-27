@@ -69,6 +69,7 @@
   (setq inhibit-startup-screen t)
   ;; Revert (update) buffers automatically when underlying files are changed externally.
   (global-auto-revert-mode t)
+  (setq auto-revert-remote-files t)
   (setq confirm-kill-emacs 'y-or-n-p)      ; y and n instead of yes and no when quitting
   ;; maximize emacs on Mac OS X
   (when *is-a-mac*
@@ -152,6 +153,7 @@
 (use-package emacs
   :ensure nil
   :config
+  (setq auth-sources '("~/.authinfo.gpg"))
   (setq backup-directory-alist
         '(("." . "~/.emacs.d/backup/")))
   (setq backup-by-copying t)
@@ -176,7 +178,7 @@
   (which-key-setup-minibuffer))
 
 (use-package magit
-  :ensure
+  :ensure t
   :bind ("C-c g" . magit-status))
 
 (use-package git-commit
@@ -195,6 +197,10 @@
   (setq git-commit-style-convention-checks
         '(non-empty-second-line
           overlong-summary-line)))
+
+(use-package forge
+  :ensure t
+  :after magit)
 
 ;; go-mode - mode for editing Go code
 (use-package go-mode
@@ -290,4 +296,17 @@
 
 (use-package eldoc
   :diminish)
+
+(use-package vterm
+  :ensure t
+  :config
+  (setq vterm-max-scrollback 20000))
+
+(use-package markdown-mode
+  :ensure t
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
 ;;; init.el ends here
