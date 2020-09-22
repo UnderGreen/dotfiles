@@ -54,6 +54,14 @@
 (setq vc-follow-symlinks 'ask)
 (defconst *is-a-mac* (eq system-type 'darwin))
 
+(defvar default-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
+  "The default value to use for `gc-cons-threshold'.
+If you experience freezing, decrease this.
+If you experience stuttering, increase this.")
+
+(defvar default-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
+  "The temporary value for `gc-cons-threshold' to defer it.")
+
 (use-package emacs
   :config
   (setq frame-title-format
@@ -62,15 +70,20 @@
                  "%b"))))
   (setq ring-bell-function 'ignore)
   (setq read-process-output-max (* 1024 1024))
-  (setq gc-cons-threshold (* 10 1024 1024))
+  (setq gc-cons-threshold default-gc-cons-upper-limit
+	gc-cons-percentage 0.5)
   (defalias 'yes-or-no-p 'y-or-n-p)
   (setq use-file-dialog nil)
   (setq use-dialog-box nil)
   (setq inhibit-startup-screen t)
+  
   ;; Revert (update) buffers automatically when underlying files are changed externally.
   (global-auto-revert-mode t)
   (setq auto-revert-remote-files t)
+
   (setq confirm-kill-emacs 'y-or-n-p)      ; y and n instead of yes and no when quitting
+  (setq read-process-output-max (* 1024 1024)) ; support larger blobs for LSP; 1mb
+  
   ;; maximize emacs on Mac OS X
   (when *is-a-mac*
     (add-to-list 'default-frame-alist '(fullscreen . maximized)))
@@ -93,13 +106,32 @@
       (set-face-attribute 'default nil :font "Hack Nerd Font-15")
       (when *is-a-mac*
           (set-face-attribute 'default nil :font "Hack Nerd Font-18")))
+
   (if (daemonp)
     (add-hook 'after-make-frame-functions
                 (lambda (frame)
                   (select-frame frame)
                   (gd/set-default-face))))
+
   (gd/set-default-face)
-  (gd/disable-toolbars))
+  (gd/disable-toolbars)
+
+  (add-hook 'emacs-startup-hook
+          (lambda ()
+            "Restore defalut values after startup."
+            (setq gc-cons-threshold default-gc-cons-threshold
+                  gc-cons-percentage 0.1)
+
+            ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
+            ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+            (defun my-minibuffer-setup-hook ()
+              (setq gc-cons-threshold default-gc-cons-upper-limit))
+
+            (defun my-minibuffer-exit-hook ()
+              (setq gc-cons-threshold default-gc-cons-threshold))
+
+            (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+            (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook))))
 
 (when *is-a-mac*
   (use-package exec-path-from-shell
@@ -204,7 +236,8 @@
 
 ;; go-mode - mode for editing Go code
 (use-package go-mode
-  :ensure t)
+  :ensure t
+  :hook (go-mode-hook . lsp-go-install-save-hooks))
 
 (use-package lsp-mode
   :ensure t
@@ -221,22 +254,29 @@
                      :remote? t
                      :server-id 'gopls-remote))
 
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-
   :hook ((go-mode-hook . lsp-deferred)
-         (go-mode-hook . 'lsp-go-install-save-hooks)
 	 (lsp-mode-hook . (lambda ()
 			    (let ((lsp-keymap-prefix "C-c l"))
                               (lsp-enable-which-key-integration)))))
   :commands lsp lsp-deferred)
 
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode-hook . rainbow-delimiters-mode))
+
 ;; Optional - provides fancier overlays.
 (use-package lsp-ui
   :ensure t
   :requires lsp-mode flycheck
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-max-height 20)
+  (setq lsp-ui-doc-position 'bottom))
 
 ;; Company mode is a standard completion package that works well with lsp-mode.
 (use-package company
@@ -267,6 +307,9 @@
   :hook (after-init-hook . projectile-mode)
   :bind-keymap
   ("C-c p" . projectile-command-map))
+
+(use-package counsel-projectile
+  :ensure t)
 
 ;; interface to ripgrep utility
 (use-package ripgrep
@@ -308,5 +351,14 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
+
+(use-package editorconfig
+  :ensure t
+  :diminish editorconfig-mode
+  :config
+  (editorconfig-mode 1))
+
+(use-package jenkinsfile-mode
+  :ensure t)
 
 ;;; init.el ends here
