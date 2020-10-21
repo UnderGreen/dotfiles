@@ -361,4 +361,11 @@ If you experience stuttering, increase this.")
 (use-package jenkinsfile-mode
   :ensure t)
 
+(use-package nix-mode
+  :ensure t)
+
+(use-package linum
+  :ensure nil
+  :config
+  (global-linum-mode 1))
 ;;; init.el ends here
