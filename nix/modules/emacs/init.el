@@ -349,7 +349,10 @@ If you experience stuttering, increase this.")
   ([remap describe-key] . helpful-key))
 
 (use-package jenkinsfile-mode
-  :ensure t)
+  :ensure t
+  :custom
+  (setq groovy-indent-offset 2)
+  :mode ("Jenkinsfile" . jenkinsfile-mode))
 
 (provide 'init)
 ;;; init.el ends here

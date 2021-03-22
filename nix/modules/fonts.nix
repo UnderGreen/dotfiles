@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  icomoon-feather = pkgs.callPackage ./fonts/feather.nix { };
+in
 {
   fonts = {
     enableDefaultFonts = true;
@@ -21,6 +24,7 @@
       cantarell-fonts
       emacs-all-the-icons-fonts
       ibm-plex
+      icomoon-feather
       fira
       font-awesome-ttf
       liberation_ttf

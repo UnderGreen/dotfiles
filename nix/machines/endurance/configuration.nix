@@ -65,6 +65,7 @@
     extraGroups = [
       "wheel"
       "docker"
+      "libvirtd"
       "networkmanager"
       "video"
     ]; # Enable ‘sudo’ for the user.
@@ -128,6 +129,7 @@
       enable = true;
       autoPrune.enable = true;
     };
+    libvirtd.enable = true;
   };
 
   hardware.opengl = {

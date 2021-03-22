@@ -8,6 +8,6 @@
       goPath = "go";
     };
 
-    home.packages = with pkgs; [ gopls ];
+    home.packages = with pkgs; [ gopls delve ];
   };
 }

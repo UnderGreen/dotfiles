@@ -12,6 +12,7 @@
       };
       extraConfig = {
         github = { user = "UnderGreen"; };
+        pull = { ff = "only"; };
       };
     };
   };

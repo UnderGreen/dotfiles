@@ -6,19 +6,24 @@
     home.packages = with pkgs; [
       bat
       brightnessctl
+      cdrtools
       fd
       google-chrome
       google-cloud-sdk
       gnumake
       i3lock-color
-      lxappearance
       keepassxc
+      lxappearance
+      multimarkdown
       nixfmt
+      pavucontrol
       python3Minimal
       ripgrep
       slack
       sqlite
       tdesktop
+      terraform
+      terraform-provider-libvirt
     ];
   };
 }
