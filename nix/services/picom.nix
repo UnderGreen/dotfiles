@@ -2,18 +2,6 @@
 
 {
   home-manager.users.greenday = {
-    programs = {
-      dircolors = {
-        enable = true;
-        enableZshIntegration = true;
-      };
-
-      fzf = {
-        enable = true;
-        enableZshIntegration = true;
-      };
-    };
-
     services = {
       picom = {
         enable = true;
