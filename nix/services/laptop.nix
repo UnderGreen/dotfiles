@@ -1,13 +1,15 @@
+{ pkgs, ... }:
+
 {
+  environment.systemPackages = with pkgs; [ lm_sensors ];
+
   services = {
     xserver = {
       libinput = {
         enable = true;
-        touchpad = {
-          disableWhileTyping = true;
-          clickMethod = "clickfinger";
-          naturalScrolling = true;
-        };
+        clickMethod = "clickfinger";
+        disableWhileTyping = true;
+        naturalScrolling = true;
       };
     };
 

@@ -30,4 +30,6 @@
 
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
+
+  services.xserver.videoDrivers = [ "nvidia" ];
 }

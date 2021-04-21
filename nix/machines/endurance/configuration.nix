@@ -8,20 +8,11 @@
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./networking.nix
+    
     #../modules/sops.nix
-    # ../../modules/fonts.nix
-    # ../../modules/bluetooth.nix
-    # ../../modules/audio.nix
-    # ../../modules/i3.nix
-    # ../../modules/desktop.nix
     # ../../modules/golang.nix
     # ../../modules/emacs.nix
     # ../../modules/gnupg.nix
-    # ../../modules/git.nix
-    # ../../modules/alacritty.nix
-    # ../../modules/polybar.nix
-    # ../../modules/rofi.nix
-    # ../../modules/xresources.nix
 
     # Include base configuration for all machines
     ../base.nix
@@ -32,15 +23,8 @@
     ../../services/laptop.nix
   ];
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    alacritty
-    lm_sensors
-  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -51,12 +35,16 @@
   #   pinentryFlavor = "gnome3";
   # };
 
-  programs.seahorse.enable = true;
+  # programs.seahorse.enable = true;
 
   # List services that you want to enable:
 
+  # control the speed of the fans on Thinkpad
   services.thinkfan = { enable = true; };
 
+  services.xserver.dpi = 141;
+  fonts.fontconfig.dpi = 141;
+  
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

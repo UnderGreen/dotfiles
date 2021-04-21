@@ -21,8 +21,10 @@
 
 (require 'package)
 
+;; optional. makes unpure packages archives unavailable
 (setq package-archives nil)
 (package-initialize)
+
 (require 'use-package)
 
 ;; Configure `use-package' prior to loading it.
@@ -350,6 +352,7 @@ If you experience stuttering, increase this.")
 
 (use-package jenkinsfile-mode
   :ensure t
+  :after groovy-mode
   :custom
   (setq groovy-indent-offset 2)
   :mode ("Jenkinsfile" . jenkinsfile-mode))

@@ -25,14 +25,5 @@
 
   networking.interfaces.enp3s0.useDHCP = true;
 
-  environment.systemPackages = with pkgs; [
-    alacritty
-    dmenu
-    git
-    google-chrome
-    wget
-    vim
-  ];
-
-  fonts.fontconfig.dpi = 108;
+  services.xserver.dpi = 108;
 }

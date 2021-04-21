@@ -3,14 +3,32 @@
 let
   myEmacs = (pkgs.emacsPackagesGen emacsPackage).emacsWithPackages (epkgs:
     (with epkgs.melpaPackages; [
+      all-the-icons
+      company
+      counsel
+      counsel-projectile
       doom-modeline
       dracula-theme
+      editorconfig
+      flycheck
+      forge
+      helpful
+      go-mode
+      groovy-mode
       ivy
+      ivy-rich
+      jenkinsfile-mode
+      lsp-mode
+      lsp-ui
       magit
+      markdown-mode
       nix-mode
+      projectile
+      ripgrep
       rainbow-delimiters
-      swiper
       use-package
+      which-key
+      yaml-mode
     ]));
 in {
   services.emacs = {
@@ -18,5 +36,12 @@ in {
     install = false;
     defaultEditor = true;
     package = myEmacs;
+  };
+
+  home-manager.users.greenday = {
+    home.file.".emacs.d" = {
+      source = ./emacs;
+      recursive = true;
+    };
   };
 }

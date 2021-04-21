@@ -47,4 +47,6 @@
     vaapiVdpau
     libvdpau-va-gl
   ];
+
+  services.xserver.videoDrivers = [ "intel" ];
 }

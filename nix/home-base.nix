@@ -3,6 +3,7 @@
 {
   imports = [
     ./programs/git.nix
+    ./programs/golang.nix
     ./programs/zsh.nix
   ];
   

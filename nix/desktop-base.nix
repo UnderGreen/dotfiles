@@ -6,6 +6,8 @@
     ./programs/dircolors.nix
     ./programs/fzf.nix
     ./programs/rofi.nix
+    
+    ./services/bluetooth.nix
     ./services/dropbox.nix
     ./services/gnupg.nix
 
@@ -14,14 +16,18 @@
       inherit pkgs;
       emacsPackage = pkgs.emacs;
     })
+    
     ./services/picom.nix
     ./services/polybar.nix
     ./services/xserver.nix
   ];
 
+  environment.systemPackages = with pkgs; [
+    google-chrome
+  ];
+
   home-manager.users.greenday = {
     home.packages = with pkgs; [
-      google-chrome
       keepassxc
       multimarkdown
       nixfmt
@@ -76,6 +82,7 @@
 
   hardware.pulseaudio = {
     enable = config.services.xserver.enable;
+    package = pkgs.pulseaudioFull;
     support32Bit = true;
   };
 }

@@ -8,8 +8,6 @@
     layout = "us,ru";
     xkbOptions = "grp:win_space_toggle,ctrl:nocaps,terminate:ctrl_alt_bksp";
 
-    videoDrivers = [ "nvidia" "intel" ];
-
     desktopManager.xterm.enable = false;
 
     displayManager = {
