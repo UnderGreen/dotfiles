@@ -6,7 +6,7 @@
     ./programs/dircolors.nix
     ./programs/fzf.nix
     ./programs/rofi.nix
-    
+
     ./services/bluetooth.nix
     ./services/dropbox.nix
     ./services/gnupg.nix
@@ -16,21 +16,21 @@
       inherit pkgs;
       emacsPackage = pkgs.emacs;
     })
-    
+
     ./services/picom.nix
     ./services/polybar.nix
+    ./services/redshift.nix
     ./services/xserver.nix
   ];
 
-  environment.systemPackages = with pkgs; [
-    google-chrome
-  ];
+  environment.systemPackages = with pkgs; [ google-chrome ];
 
   home-manager.users.greenday = {
     home.packages = with pkgs; [
       keepassxc
       multimarkdown
       nixfmt
+      pavucontrol
       tdesktop
     ];
 
@@ -42,6 +42,8 @@
         sha256 = "3vo67r0B0nPwmpmpT/r9oZYYtRHaZOmRxDJeVFUhwcs=";
       } + "/Xresources");
     };
+
+    xdg = { userDirs = { enable = true; }; };
   };
 
   fonts = {

@@ -8,6 +8,9 @@
       enableCompletion = true;
       autocd = true;
       history = {
+        extended = false;
+        ignoreDups = true;
+        save = 10000;
         size = 10000;
       };
       defaultKeymap = "emacs";
@@ -30,7 +33,12 @@
 
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" "last-working-dir" ];
+        plugins = [
+          "fd"
+          "git"
+          "last-working-dir"
+          "ripgrep"
+        ];
         theme = "";
       };
 

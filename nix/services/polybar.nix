@@ -13,14 +13,23 @@
         config = {
           "bar/top" = {
             bottom = false;
-            modules-left = "logo i3";
-            modules-right = "volume battery date";
+            fixed-center = true;
+            radius = 0;
+            wm-name = "i3";
+            modules-left = "logo sep i3";
+            modules-right = "volume sep battery sep date";
             tray-position = "right";
+            tray-detached = false;
             font-0 = "Iosevka Nerd Font:size=12;3";
             font-1 = "icomoon\-feather:size=12;3";
           };
 
-          "module/i3" = { type = "internal/i3"; };
+          "module/i3" = {
+            type = "internal/i3";
+            pin-workspaces = true;
+            strip-wsnumbers = true;
+            enable-click = true;
+          };
 
           "module/date" = {
             type = "internal/date";
@@ -49,7 +58,17 @@
             ramp-volume-2 = "墳";
             click-right = "pavucontrol &";
           };
-          
+
+          "module/decor-glyph" = {
+            type = "custom/text";
+            content-foreground = "#899ca1";
+            margin = 0;
+          };
+
+          "module/sep" = {
+            "inherit" = "module/decor-glyph";
+            content = "/";
+          };
         };
         script = "polybar top &";
       };

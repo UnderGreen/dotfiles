@@ -26,6 +26,7 @@
         "${pkgs.capitaine-cursors}/share/icons/capitaine-cursors-white";
 
     xsession = {
+      numlock.enable = true;
       pointerCursor = {
         package = pkgs.capitaine-cursors;
         name = "Capitaine Cursors - White";

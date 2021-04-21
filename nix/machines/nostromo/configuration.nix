@@ -26,4 +26,5 @@
   networking.interfaces.enp3s0.useDHCP = true;
 
   services.xserver.dpi = 108;
+  fonts.fontconfig.dpi = 108;
 }
