@@ -1,7 +1,7 @@
 { pkgs, emacsPackage ? pkgs.emacs-nox, ... }:
 
 let
-  emacs = (pkgs.emacsPackagesGen emacsPackage).emacsWithPackages (epkgs:
+  myEmacs = (pkgs.emacsPackagesGen emacsPackage).emacsWithPackages (epkgs:
     (with epkgs.melpaPackages; [
       doom-modeline
       dracula-theme
@@ -15,8 +15,8 @@ let
 in {
   services.emacs = {
     enable = true;
-    install = true;
+    install = false;
     defaultEditor = true;
-    package = emacs;
+    package = myEmacs;
   };
 }

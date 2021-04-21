@@ -18,15 +18,6 @@
       layout = "us,ru";
       xkbOptions = "ctrl:nocaps, lv3:ralt_switch, grp:win_space_toggle";
 
-      libinput = {
-        enable = true;
-        touchpad = {
-          disableWhileTyping = true;
-          clickMethod = "clickfinger";
-          naturalScrolling = true;
-        };
-      };
-
       displayManager = {
         gdm.enable = true;
         gdm.wayland = false;

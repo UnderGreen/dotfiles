@@ -12,7 +12,7 @@
         extraOptions = ''
           glx-no-rebind-pixmap = true;
           glx-no-stencil = true;
-          xrender-sync-fence = false;
+          xrender-sync-fence = true;
         '';
       };
     };

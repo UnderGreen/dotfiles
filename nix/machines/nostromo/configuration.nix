@@ -13,7 +13,6 @@
       ../base.nix
 
       # Include any other services and programs
-      ../../services/xserver.nix
       ../../home-base.nix
       ../../desktop-base.nix
     ];

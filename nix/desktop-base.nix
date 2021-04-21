@@ -5,6 +5,7 @@
     ./programs/alacritty.nix
     ./programs/dircolors.nix
     ./programs/fzf.nix
+    ./programs/rofi.nix
     ./services/dropbox.nix
     ./services/gnupg.nix
 
@@ -14,6 +15,8 @@
       emacsPackage = pkgs.emacs;
     })
     ./services/picom.nix
+    ./services/polybar.nix
+    ./services/xserver.nix
   ];
 
   home-manager.users.greenday = {

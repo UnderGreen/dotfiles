@@ -27,9 +27,9 @@
     ../base.nix
 
     # Include any other services and programs
-    ../../services/xserver.nix
     ../../home-base.nix
-    ../../programs/zsh.nix
+    ../../desktop-base.nix
+    ../../services/laptop.nix
   ];
 
   # Enable CUPS to print documents.
@@ -41,22 +41,6 @@
     alacritty
     lm_sensors
   ];
-
-  services.tlp = {
-    enable = true;
-    settings = {
-      DISK_DEVICES = "sda";
-      DISK_IOSCHED = "mq-deadline";
-      START_CHARGE_THRESH_BAT0 = 65;
-      STOP_CHARGE_THRESH_BAT0 = 95;
-
-      # Intel CPU HWP hints
-      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
-
-      TPSMAPI_ENABLE = 0;
-    };
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
