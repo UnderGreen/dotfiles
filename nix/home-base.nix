@@ -10,6 +10,7 @@
   home-manager.users.greenday = {
     home.stateVersion = "20.09";
     home.packages = with pkgs; [
+      cdrkit
       fd
       google-cloud-sdk
       gnumake

@@ -9,8 +9,8 @@
         colors = import ./alacritty/dracula.nix;
         scrolling.history = 10000;
         window.padding = {
-          x = 10;
-          y = 10;
+          x = 5;
+          y = 5;
         };
       };
     };

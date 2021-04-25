@@ -44,6 +44,8 @@
     };
 
     xdg = { userDirs = { enable = true; }; };
+    
+    home.file.".background-image".source = ./files/wallpaper.jpg;
   };
 
   fonts = {

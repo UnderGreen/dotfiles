@@ -40,9 +40,10 @@
           bars = [ ];
           modifier = "Mod4";
           gaps = {
-            inner = 8;
+            inner = 5;
             outer = 1;
-            smartGaps = true;
+            top = 25;
+            smartGaps = false;
           };
           menu = "${pkgs.rofi}/bin/rofi -show drun";
           terminal = "${pkgs.alacritty}/bin/alacritty";

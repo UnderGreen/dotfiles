@@ -42,6 +42,9 @@
   # control the speed of the fans on Thinkpad
   services.thinkfan = { enable = true; };
 
+  # enable events based on battery level
+  services.upower.enable = true;
+
   services.xserver.dpi = 141;
   fonts.fontconfig.dpi = 141;
   
