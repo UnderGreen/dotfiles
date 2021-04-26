@@ -25,6 +25,8 @@
 
   environment.systemPackages = with pkgs; [ google-chrome ];
 
+  services.dbus.packages = with pkgs; [ gnome3.dconf ];
+
   home-manager.users.greenday = {
     home.packages = with pkgs; [
       keepassxc
@@ -45,9 +47,27 @@
 
     xdg = { userDirs = { enable = true; }; };
 
+    gtk = {
+      enable = true;
+      font = { name = "Noto Sans 10"; };
+      iconTheme = {
+        name = "Papirus";
+        package = pkgs.papirus-icon-theme;
+      };
+      theme = {
+        name = "Adwaita";
+      };
+      gtk3.extraConfig = { gtk-application-prefer-dark-theme = true; };
+    };
+
     home.file.".background-image".source = ./files/wallpaper.jpg;
   };
 
+  qt5 = {
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
+    
   fonts = {
     enableDefaultFonts = true;
     enableFontDir = true; # ls /run/current-system/sw/share/X11-fonts

@@ -5,31 +5,32 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [
-      <home-manager/nixos>
-    ];
+  imports = [ <home-manager/nixos> ];
 
-  nixpkgs.config = {
-    allowUnfree = true;
-  };
+  nixpkgs.config = { allowUnfree = true; };
 
   home-manager.useGlobalPkgs = true;
-  
+
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.version = 2;
-  boot.loader.grub.device = "nodev";
-  boot.loader.grub.efiSupport = true;
+  boot = {
+    loader = {
+      efi.canTouchEfiVariables = true;
+      grub = {
+        enable = true;
+        version = 2;
+        device = "nodev";
+        efiSupport = true;
+        theme = pkgs.nixos-grub2-theme;
+      };
+    };
+    plymouth.enable = true;
+  };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Set your time zone.
-  time = {
-    timeZone = "America/Toronto";
-  };
+  time = { timeZone = "America/Toronto"; };
   services.timesyncd.enable = true;
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
@@ -61,11 +62,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.greenday = {
     isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "docker"
-      "libvirtd"
-    ];
+    extraGroups = [ "wheel" "docker" "libvirtd" ];
     shell = pkgs.zsh;
     initialHashedPassword =
       "$6$6bSZ0eBfeekdl$diqXX2Pa7fr1iNMTDJjELOg2gyLyVjDhhCfdjtcaTZM43cd2x0ebJnxKVhjiezrAZYclv.yv/s4/WF1kWyfC3/";
@@ -76,12 +73,7 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    home-manager
-    git
-    wget
-    vim
-  ];
+  environment.systemPackages = with pkgs; [ home-manager git wget vim ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -98,7 +90,7 @@
   services.openssh.enable = true;
 
   services.logind.extraConfig = "RuntimeDirectorySize=8G";
-  
+
   virtualisation = {
     docker = {
       enable = true;

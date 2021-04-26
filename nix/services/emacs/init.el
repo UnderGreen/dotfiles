@@ -176,6 +176,15 @@ If you experience stuttering, increase this.")
   (setq save-place-forget-unreadable-files t)
   (save-place-mode 1))
 
+(use-package tramp
+  :config
+  (setq tramp-terminal-type "tramp")
+  ;;(setq tramp-use-ssh-controlmaster-options nil)
+  (add-to-list 'tramp-remote-path "~/bin")
+  (add-to-list 'tramp-remote-path "~/go/bin")
+  (add-to-list 'tramp-remote-path "/usr/lib/go-1.13/bin"))
+  ;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+
 (use-package dracula-theme
   :ensure t
   :config
