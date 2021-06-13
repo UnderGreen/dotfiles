@@ -19,6 +19,9 @@
 
 ;;; Code:
 
+(add-to-list 'load-path (concat user-emacs-directory
+				(convert-standard-filename "config/")))
+
 (require 'package)
 
 ;; optional. makes unpure packages archives unavailable
@@ -110,19 +113,11 @@ If you experience stuttering, increase this.")
       (when (fboundp 'menu-bar-mode)
         (menu-bar-mode -1))))
 
-  (defun gd/set-default-face()
-      (interactive)
-      (set-face-attribute 'default nil :font "Hack Nerd Font-12")
-      (when *is-a-mac*
-          (set-face-attribute 'default nil :font "Hack Nerd Font-18")))
-
   (if (daemonp)
     (add-hook 'after-make-frame-functions
                 (lambda (frame)
-                  (select-frame frame)
-                  (gd/set-default-face))))
+                  (select-frame frame))))
 
-  (gd/set-default-face)
   (gd/disable-toolbars)
 
   (add-hook 'emacs-startup-hook
@@ -152,6 +147,8 @@ If you experience stuttering, increase this.")
   :hook (after-init-hook . electric-indent-mode)
   :bind (("<escape>" . keyboard-escape-quit)
 	 ("C-c h b" . describe-personal-keybindings)))
+
+(require 'fonts)
 
 (use-package cus-edit
   :config

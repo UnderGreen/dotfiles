@@ -13,7 +13,7 @@
 
     # Run emacs with X gui
     (import ./services/emacs.nix {
-      inherit pkgs;
+      inherit pkgs config;
       emacsPackage = pkgs.emacs;
     })
 

@@ -21,8 +21,12 @@
     ../../home-base.nix
     ../../desktop-base.nix
     ../../services/laptop.nix
+    ../../modules/settings.nix
   ];
 
+  settings = {
+    fontSize = 12;
+  };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 

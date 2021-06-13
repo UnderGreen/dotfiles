@@ -1,4 +1,4 @@
-{ pkgs, emacsPackage ? pkgs.emacs-nox, ... }:
+{ config, pkgs, emacsPackage ? pkgs.emacs-nox, ... }:
 
 let
   myEmacs = (pkgs.emacsPackagesGen emacsPackage).emacsWithPackages (epkgs:
@@ -39,9 +39,20 @@ in {
   };
 
   home-manager.users.greenday = {
-    home.file.".emacs.d" = {
-      source = ./emacs;
-      recursive = true;
+    home.file = {
+      ".emacs.d" = {
+        source = ./emacs;
+        recursive = true;
+      };
+
+      "fonts.el" = {
+        target = ".emacs.d/config/fonts.el";
+        text = ''
+             (provide 'fonts)
+             (set-frame-font "Hack Nerd Font-${toString config.settings.fontSize}")
+             (setq default-frame-alist '((font . "Hack Nerd Font-${toString config.settings.fontSize}")))
+        '';
+      };
     };
   };
 }

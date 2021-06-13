@@ -9,11 +9,17 @@
 
   nixpkgs.config = { allowUnfree = true; };
 
+  nix.gc = {
+    automatic = true;
+    options = "--delete-older-than 14d";
+  };
+  
   home-manager.useGlobalPkgs = true;
 
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
   boot = {
+    cleanTmpDir = true;
     loader = {
       efi.canTouchEfiVariables = true;
       grub = {
