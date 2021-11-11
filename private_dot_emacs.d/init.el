@@ -1,137 +1,74 @@
-;; init.el --- Personal GNU Emacs configuration file.
+;; Basic UI Configuration ------------------------------------------------------
 
-;; Copyright (c) 2020 Sergei Antipov <greendayonfire@gmail.com>
-;;
-;; This file is free software: you can redistribute it and/or modify it
-;; under the terms of the GNU General Public License as published by the
-;; Free Software Foundation, either version 3 of the License, or (at
-;; your option) any later version.
-;;
-;; This file is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+(setq inhibit-startup-message t)
 
-;;; Commentary:
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 10)        ; Give some breathing room
 
-;;; Code:
+(menu-bar-mode -1)          ; Disable the menu bar
 
-(require 'package)
+;; Set up the visible bell
+(setq visible-bell t)
 
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+(column-number-mode)
+(global-display-line-numbers-mode t)
 
-;; Initialise the packages, avoiding a re-initialisation.
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil)
-  (package-initialize))
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+		shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-;; Make sure `use-package' is available.
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(set-face-attribute 'default nil :font "MesloLGS Nerd Font Mono" :height 200)
 
-;; Configure `use-package' prior to loading it.
-(eval-and-compile
-  (setq use-package-always-ensure nil)
-  (setq use-package-always-defer nil)
-  (setq use-package-always-demand nil)
-  (setq use-package-expand-minimally t)
-  (setq use-package-enable-imenu-support t)
-  ;; The following is VERY IMPORTANT.  Write hooks using their real name
-  ;; instead of a shorter version: after-init ==> `after-init-hook'.
-  ;;
-  ;; This is to empower help commands with their contextual awareness,
-  ;; such as `describe-symbol'.
-  (setq use-package-hook-name-suffix nil))
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Hack Nerd Font Mono" :height 200)
 
-(eval-when-compile
-  (require 'use-package))
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Helvetica Neue" :height 295 :weight 'regular)
 
-(setq vc-follow-symlinks 'ask)
+;; make backup to a designated dir, mirroring the full path
+
+(defun my-backup-file-name (fpath)
+  "Return a new file path of a given file path.
+If the new path's directories does not exist, create them."
+  (let* (
+        (backupRootDir "~/.emacs.d/backup/")
+        (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path, for example, “C:”
+        (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") ))
+        )
+    (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
+    backupFilePath
+  )
+)
+
+(setq make-backup-file-name-function 'my-backup-file-name)
+(setq backup-by-copying t)
+
 (defconst *is-a-mac* (eq system-type 'darwin))
 
-(defvar default-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
-  "The default value to use for `gc-cons-threshold'.
-If you experience freezing, decrease this.
-If you experience stuttering, increase this.")
+;; Package Manager Configuration -----------------------------------------------
 
-(defvar default-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
-  "The temporary value for `gc-cons-threshold' to defer it.")
+;; Initialize package sources
+(require 'package)
 
-(use-package emacs
-  :config
-  (setq frame-title-format
-      '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
-  (setq ring-bell-function 'ignore)
-  (setq read-process-output-max (* 1024 1024))
-  (setq gc-cons-threshold default-gc-cons-upper-limit
-	gc-cons-percentage 0.5)
-  (defalias 'yes-or-no-p 'y-or-n-p)
-  (setq use-file-dialog nil)
-  (setq use-dialog-box nil)
-  (setq inhibit-startup-screen t)
-  
-  ;; Revert (update) buffers automatically when underlying files are changed externally.
-  (global-auto-revert-mode t)
-  (setq auto-revert-remote-files t)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
-  (setq confirm-kill-emacs 'y-or-n-p)      ; y and n instead of yes and no when quitting
-  (setq read-process-output-max (* 1024 1024)) ; support larger blobs for LSP; 1mb
-  
-  ;; maximize emacs on Mac OS X
-  (when *is-a-mac*
-    (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
-  (defun gd/disable-toolbars()
-    (when (fboundp 'tool-bar-mode)
-      (tool-bar-mode -1))
-    (when (fboundp 'set-scroll-bar-mode)
-      (set-scroll-bar-mode nil))
-    (if *is-a-mac*
-        (add-hook 'after-make-frame-functions
-                  (lambda (frame)
-                    (unless (display-graphic-p frame)
-                      (set-frame-parameter frame 'menu-bar-lines 0))))
-      (when (fboundp 'menu-bar-mode)
-        (menu-bar-mode -1))))
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
 
-  (defun gd/set-default-face()
-      (interactive)
-      (set-face-attribute 'default nil :font "Hack Nerd Font-15")
-      (when *is-a-mac*
-          (set-face-attribute 'default nil :font "Hack Nerd Font-18")))
-
-  (if (daemonp)
-    (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (select-frame frame)
-                  (gd/set-default-face))))
-
-  (gd/set-default-face)
-  (gd/disable-toolbars)
-
-  (add-hook 'emacs-startup-hook
-          (lambda ()
-            "Restore defalut values after startup."
-            (setq gc-cons-threshold default-gc-cons-threshold
-                  gc-cons-percentage 0.1)
-
-            ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
-            ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
-            (defun my-minibuffer-setup-hook ()
-              (setq gc-cons-threshold default-gc-cons-upper-limit))
-
-            (defun my-minibuffer-exit-hook ()
-              (setq gc-cons-threshold default-gc-cons-threshold))
-
-            (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
-            (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook))))
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 (when *is-a-mac*
   (use-package exec-path-from-shell
@@ -140,232 +77,203 @@ If you experience stuttering, increase this.")
     (when (memq window-system '(mac ns))
       (exec-path-from-shell-initialize))))
 
-(use-package tramp
-  :config
-  (setq tramp-terminal-type "tramp")
-  ;;(setq tramp-use-ssh-controlmaster-options nil)
-  (add-to-list 'tramp-remote-path "~/bin")
-  (add-to-list 'tramp-remote-path "~/go/bin")
-  (add-to-list 'tramp-remote-path "/usr/lib/go-1.13/bin"))
-  ;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path))
-
-(use-package diminish
-  :ensure t
-  :after use-package)
-
-;; setup sanityinc tomorrow theme
-(use-package color-theme-sanityinc-tomorrow
-  :ensure t
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
   :init
-  (load-theme 'sanityinc-tomorrow-night t))
+  (ivy-mode 1))
 
-(use-package cus-edit
-  :config
-  (setq custom-file "~/.emacs.d/custom.el")
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom (doom-modeline-height 10))
 
-  (unless (file-exists-p custom-file)
-    (write-region "" nil custom-file))
-
-  (load custom-file))
-
-(use-package recentf
-  :init
-  (setq recentf-save-file "~/.emacs.d/recentf")
-  (setq recentf-max-saved-items 200)
-  (setq recentf-exclude '(".gz" ".xz" ".zip" "/elpa/" "/ssh:" "/sudo:"))
-
-  :hook (after-init-hook . recentf-mode))
-
-(use-package saveplace
-  :config
-  (setq save-place-file "~/.emacs.d/saveplace")
-  (setq save-place-forget-unreadable-files t)
-  (save-place-mode 1))
-
-(use-package emacs
-  :ensure nil
-  :config
-  (setq auth-sources '("~/.authinfo.gpg"))
-  (setq backup-directory-alist
-        '(("." . "~/.emacs.d/backup/")))
-  (setq backup-by-copying t)
-  (setq version-control t)
-  (setq delete-old-versions t)
-  (setq kept-new-versions 6)
-  (setq kept-old-versions 2)
-  (setq create-lockfiles nil)
-  (setq show-trailing-whitespace t)
-  (delete-selection-mode 1)
-
-  (when (fboundp 'electric-pair-mode)
-    (add-hook 'after-init-hook 'electric-pair-mode))
-
-  :hook (after-init-hook . electric-indent-mode))
-
-(use-package which-key
-  :ensure t
-  :diminish which-key-mode
-  :config
-  (which-key-mode)
-  (which-key-setup-minibuffer))
-
-(use-package magit
-  :ensure t
-  :bind ("C-c g" . magit-status))
-
-(use-package git-commit
-  :after magit
-  :config
-  (setq git-commit-summary-max-length 50)
-  (setq git-commit-known-pseudo-headers
-        '("Signed-off-by"
-          "Acked-by"
-          "Modified-by"
-          "Cc"
-          "Suggested-by"
-          "Reported-by"
-          "Tested-by"
-          "Reviewed-by"))
-  (setq git-commit-style-convention-checks
-        '(non-empty-second-line
-          overlong-summary-line)))
-
-(use-package forge
-  :ensure t
-  :after magit)
-
-;; go-mode - mode for editing Go code
-(use-package go-mode
-  :ensure t
-  :hook (go-mode-hook . lsp-go-install-save-hooks))
-
-(use-package lsp-mode
+(use-package doom-themes
   :ensure t
   :config
-  (setq lsp-enable-indentation t)
-  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
-  (setq lsp-enable-snippet nil)
-  (setq lsp-prefer-capf t)
-  (setq lsp-enable-file-watchers nil)
-  
-  (lsp-register-client
-    (make-lsp-client :new-connection (lsp-tramp-connection "gopls")
-                     :major-modes '(go-mode)
-                     :remote? t
-                     :server-id 'gopls-remote))
-
-  :hook ((go-mode-hook . lsp-deferred)
-	 (lsp-mode-hook . (lambda ()
-			    (let ((lsp-keymap-prefix "C-c l"))
-                              (lsp-enable-which-key-integration)))))
-  :commands lsp lsp-deferred)
-
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dracula t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config))
 
 (use-package rainbow-delimiters
-  :ensure t
-  :hook (prog-mode-hook . rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
-;; Optional - provides fancier overlays.
-(use-package lsp-ui
-  :ensure t
-  :requires lsp-mode flycheck
-  :commands lsp-ui-mode
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
   :config
-  (setq lsp-ui-doc-enable t)
-  (setq lsp-ui-doc-max-height 20)
-  (setq lsp-ui-doc-position 'bottom))
+  (setq which-key-idle-delay 1))
 
-;; Company mode is a standard completion package that works well with lsp-mode.
-(use-package company
-  :ensure t
-  :diminish company-mode
-  :config
-  ;; Optionally enable completion-as-you-type behavior.
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 2)
-
-  :hook (after-init-hook . global-company-mode))
-
-;; flycheck configuration
-(use-package flycheck
-  :ensure t
-  :config
-  (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
-  :hook (prog-mode-hook . global-flycheck-mode))
-
-;; projectile - project interaction library
-(use-package projectile
-  :ensure t
-  :diminish projectile-mode
-  :config
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-track-known-projects-automatically nil)
-
-  :hook (after-init-hook . projectile-mode)
-  :bind-keymap
-  ("C-c p" . projectile-command-map))
-
-(use-package counsel-projectile
-  :ensure t)
-
-;; interface to ripgrep utility
-(use-package ripgrep
-  :ensure t)
-
-;; yaml-mode - Simple major mode to edit YAML file for emacs
-(use-package yaml-mode
-  :ensure t)
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
 
 (use-package counsel
-  :ensure t
-  :diminish ivy-mode
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+(use-package general
   :config
-  (setq ivy-use-virtual-buffers t)
+  (general-create-definer rune/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
 
-  :bind (("M-x" . 'counsel-M-x)
-         ("C-x C-f" . 'counsel-find-file)
-         ("\C-s" . 'swiper)
-         ("\C-r" . 'swiper))
-  :hook ((after-init-hook . ivy-mode)
-         (ivy-occur-mode-hook . hl-line-mode)))
+  (rune/leader-keys
+    "t"  '(:ignore t :which-key "toggles")
+    "tt" '(counsel-load-theme :which-key "choose theme")))
 
-(use-package keychain-environment
-  :ensure t
+(use-package evil
   :init
-  (keychain-refresh-environment))
-
-(use-package eldoc
-  :diminish)
-
-(use-package vterm
-  :ensure t
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
   :config
-  (setq vterm-max-scrollback 20000))
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-insert-state-map "jj" 'evil-normal-state)
+  (define-key evil-visual-state-map "vv" 'evil-normal-state)
 
-(use-package markdown-mode
-  :ensure t
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-(use-package editorconfig
-  :ensure t
-  :diminish editorconfig-mode
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
+(use-package evil-collection
+  :after evil
   :config
-  (editorconfig-mode 1))
+  (evil-collection-init))
 
-(use-package jenkinsfile-mode
-  :ensure t)
+(use-package hydra)
 
-(use-package nix-mode
-  :ensure t)
+(defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finished" :exit t))
 
-(use-package linum
-  :ensure nil
+(rune/leader-keys
+  "ts" '(hydra-text-scale/body :which-key "scale text"))
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; NOTE: Make sure to configure a GitHub token before using this package!
+;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+(use-package forge
+  :after magit)
+
+(defun efs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+;; Org Mode Configuration ------------------------------------------------------
+
+(defun efs/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "MesloLGS Nerd Font" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+(use-package org
+  :hook (org-mode . efs/org-mode-setup)
   :config
-  (global-linum-mode 1))
-;;; init.el ends here
+  (setq org-ellipsis " ▾")
+  (efs/org-font-setup))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ivy-rich-mode t)
+ '(package-selected-packages
+   '(visual-fill-column org-bullets exec-path-from-shell forge evil-magit magit counsel-projectile projectile hydra evil-collection evil general helpful doom-themes counsel ivy-rich which-key rainbow-delimiters dracula-theme doom-modeline ivy use-package))
+ '(projectile-mode t nil (projectile))
+ '(which-key-mode t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
