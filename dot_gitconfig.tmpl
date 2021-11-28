@@ -1,7 +1,7 @@
 [user]
     name = Sergei Antipov
     email = {{ .email }}
-    signingkey = B167B87787407B3A
+    signingkey = {{ if eq .chezmoi.os "darwin" }}B167B87787407B3A{{ else }}6CFE66773A25FFF4{{ end }}
 [color]
     diff = auto
     status = auto

@@ -22,13 +22,13 @@
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(set-face-attribute 'default nil :font "MesloLGS Nerd Font Mono" :height 200)
+(set-face-attribute 'default nil :font "MesloLGS Nerd Font Mono" :height 120)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Hack Nerd Font Mono" :height 200)
+(set-face-attribute 'fixed-pitch nil :font "Hack Nerd Font Mono" :height 120)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Helvetica Neue" :height 295 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Liberation Sans" :height 135 :weight 'regular)
 
 ;; make backup to a designated dir, mirroring the full path
 
