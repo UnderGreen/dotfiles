@@ -16,9 +16,15 @@
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
-[".oh-my-zsh/custom/plugins/matthieusb/zsh-sdkman"]
+[".oh-my-zsh/custom/plugins/zsh-sdkman"]
     type = "archive"
     url = "https://github.com/matthieusb/zsh-sdkman/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"
+[".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+    type = "archive"
+    url = "https://github.com/zsh-users/zsh-autosuggestions/archive/refs/tags/v0.7.0.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
