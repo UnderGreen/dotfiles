@@ -10,7 +10,7 @@
 
 (when *is-a-mac*
   (setq efs/default-font-size 200)
-  (setq efs/defautl-variable-font-size 295)
+  (setq efs/default-variable-font-size 215)
   (setq efs/default-variable-font-name "Helvetica Neue"))
 
 ;; Initialize package sources

@@ -21,7 +21,7 @@ The following variables are used to tweak some of the configuration pieces for u
 
       (when *is-a-mac*
         (setq efs/default-font-size 200)
-        (setq efs/defautl-variable-font-size 295)
+        (setq efs/default-variable-font-size 215)
         (setq efs/default-variable-font-name "Helvetica Neue"))
 
 #+end_src
