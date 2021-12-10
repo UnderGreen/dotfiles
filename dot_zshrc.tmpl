@@ -83,6 +83,8 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+DISABLE_AUTO_UPDATE="true"
+
 # Who likes duplicates in history? Nobody!
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_IGNORE_DUPS
@@ -126,5 +128,7 @@ export FZF_DEFAULT_COMMAND='fd --type file --color=always --follow --hidden --ex
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS="--ansi"
 
-export SDKMAN_DIR="/Users/s.antipov/.sdkman"
+[[ -s "$HOME/.pulumi/bin/pulumi" ]] && export PATH=$PATH:$HOME/.pulumi/bin
+
+export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
