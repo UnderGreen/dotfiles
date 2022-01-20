@@ -679,15 +679,20 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
 
   (use-package projectile
     :diminish projectile-mode
-    :config (projectile-mode)
+    :config
+    (projectile-mode)
+    (setq projectile-indexing-method 'alien)
+    (setq projectile-enable-caching t)
     :custom ((projectile-completion-system 'ivy))
     :bind-keymap
     ("C-c p" . projectile-command-map)
     :init
-    (setq projectile-switch-project-action #'projectile-dired))
+    (setq projectile-switch-project-action #'projectile-commander))
 
   (use-package counsel-projectile
-    :config (counsel-projectile-mode))
+    :config (counsel-projectile-mode)
+    :custom
+    (counsel-projectile-find-file-more-chars 3))
 
 #+end_src
 
