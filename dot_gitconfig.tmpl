@@ -1,7 +1,7 @@
 [user]
     name = Sergei Antipov
     email = {{ .email }}
-    signingkey = {{ if eq .chezmoi.os "darwin" }}B167B87787407B3A{{ else }}6CFE66773A25FFF4{{ end }}
+    signingkey = {{ if (eq .chezmoi.os "darwin") }}B167B87787407B3A{{ else }}6CFE66773A25FFF4{{ end }}
 [color]
     diff = auto
     status = auto
@@ -43,7 +43,7 @@
 [commit]
     gpgsign = true
 [gpg]
-    program = {{ if eq .chezmoi.os "darwin" }}/usr/local/bin/gpg{{ else }}/usr/bin/gpg{{ end }}
+    program = {{ if (eq .chezmoi.os "darwin") }}/usr/local/bin/gpg{{ else }}/usr/bin/gpg{{ end }}
 [github]
     user = UnderGreen
 [pull]

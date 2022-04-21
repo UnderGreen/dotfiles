@@ -77,7 +77,7 @@ zstyle ':omz:update' mode disabled  # disable automatic updates
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(aws colored-man-pages colorize fzf gh git pip python ripgrep vscode zsh-autosuggestions zsh-sdkman zsh-syntax-highlighting{{ if eq .chezmoi.os "darwin" }} brew macos{{ end }})
+plugins=(aws colored-man-pages colorize docker fzf gh git kubectl pip python ripgrep terraform vscode zsh-autosuggestions zsh-sdkman zsh-syntax-highlighting{{ if eq .chezmoi.os "darwin" }} brew macos{{ end }})
 
 source $ZSH/oh-my-zsh.sh
 
