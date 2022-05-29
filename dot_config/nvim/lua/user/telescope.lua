@@ -11,6 +11,17 @@ telescope.setup {
     prompt_prefix = " ",
     selection_caret = " ",
     path_display = { "smart" },
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--trim" -- add this value
+    },
+    file_ignore_patterns = {"vendor", "venv"},
 
     mappings = {
       i = {
@@ -85,6 +96,13 @@ telescope.setup {
     -- }
     -- Now the picker_config_key will be applied every time you call this
     -- builtin picker
+    find_files = {
+      find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
+    },
+    buffers = {
+      sort_lastused = true,
+      sort_mru = true,
+    },
   },
   extensions = {
     -- Your extension configuration goes here:
