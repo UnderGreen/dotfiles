@@ -101,7 +101,8 @@ return packer.startup(function(use)
   -- REST
   use {
     "NTBBloodbath/rest.nvim",
-    requires = { "nvim-lua/plenary.nvim" }
+    requires = { "nvim-lua/plenary.nvim" },
+    commit = "e5f68db73276c4d4d255f75a77bbe6eff7a476ef"
   }
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
