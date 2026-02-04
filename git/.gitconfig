@@ -1,0 +1,12 @@
+[user]
+	name = Sergei Antipov
+	email = s.antipov@salesforce.com
+	signingkey = E96E5C048EECE443
+[github]
+	user = s-antipov_sfemu
+[url "git@github.com:mulesoft-emu"]
+	insteadOf = https://github.com/mulesoft-emu
+[commit]
+	gpgsign = true
+[fetch]
+	prune = true

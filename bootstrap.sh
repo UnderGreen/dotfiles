@@ -1,60 +1,54 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -o errexit
+# Directories to ignore when stowing
+IGNORE_DIRS=(".git" ".claude" ".DS_Store")
 
-REPO_URL=https://github.com/UnderGreen/dotfiles.git
-REPO_PATH="$HOME/src/github.com/UnderGreen/dotfiles"
-
-reset_color=$(tput sgr 0)
-
-info() {
-  printf "%s[*] %s%s\n" "$(tput setaf 4)" "$1" "$reset_color"
-}
-
-success() {
-  printf "%s[*] %s%s\n" "$(tput setaf 2)" "$1" "$reset_color"
-}
-
-err() {
-  printf "%s[*] %s%s\n" "$(tput setaf 1)" "$1" "$reset_color"
-}
-
-warn() {
-  printf "%s[*] %s%s\n" "$(tput setaf 3)" "$1" "$reset_color"
-}
-
-install_xcode() {
-  if xcode-select -p >/dev/null; then
-    warn "xCode Command Line Tools already installed"
-  else
-    info "Installing xCode Command Line Tools..."
-    xcode-select --install
-    sudo xcodebuild -license accept
-  fi
-}
-
-install_homebrew() {
-  export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-  if hash brew &>/dev/null; then
-    warn "Homebrew already installed"
-  else
-    info "Installing homebrew..."
-    sudo --validate # reset `sudo` timeout to use Homebrew install in noninteractive mode
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  fi
-}
-
-info "####### dotfiles #######"
-read -p "Press enter to start:"
-info "Bootstraping..."
-
-install_xcode
-install_homebrew
-
-info "Cloning .dotfiles repo from $REPO_URL into $REPO_PATH"
-if [[ ! -d "$REPO_PATH" ]]; then
-  git clone "$REPO_URL" "$REPO_PATH"
+# Install Homebrew if not installed
+if ! command -v brew &> /dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-info "Change path to $REPO_PATH"
-cd "$REPO_PATH" >/dev/null
+# Install packages from Brewfile
+echo "Installing packages..."
+brew bundle --file=~/dotfiles/Brewfile
+
+# Detect OS
+if [[ "$(uname)" == "Darwin" ]]; then
+    OS_TYPE="macos"
+elif grep -qi microsoft /proc/version 2>/dev/null || grep -qi wsl /proc/version 2>/dev/null; then
+    OS_TYPE="wsl"
+else
+    OS_TYPE="linux"
+fi
+echo "Detected OS: $OS_TYPE"
+
+# Stow dotfiles
+echo "Linking dotfiles..."
+cd ~/dotfiles
+
+for dir in */; do
+    dir_name="${dir%/}"
+
+    # Skip if in ignore list
+    skip=false
+    for ignore in "${IGNORE_DIRS[@]}"; do
+        if [[ "$dir_name" == "$ignore" ]]; then
+            skip=true
+            break
+        fi
+    done
+
+    if [[ "$skip" == false ]]; then
+        echo "Stowing $dir_name..."
+        stow --adopt "$dir_name"
+    fi
+done
+
+# Symlink OS-specific gitconfig
+if [[ -f "$HOME/.gitconfig.$OS_TYPE" ]]; then
+    ln -sf "$HOME/.gitconfig.$OS_TYPE" "$HOME/.gitconfig.local"
+    echo "Linked .gitconfig.$OS_TYPE to .gitconfig.local"
+fi
+
+echo "Done! Restart your terminal."

@@ -1,0 +1,30 @@
+# macOS-specific PATH configuration
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+
+# Claude Code CA certificates
+export NODE_EXTRA_CA_CERTS="$HOME/.claude/certs/salesforce-ca-bundle.pem"
+
+# Function to select AWS profile with fzf
+aws_profile_select() {
+  local profile
+  profile=$(grep '^\[profile ' ~/.aws/config | \
+    sed 's/\[profile \(.*\)\]/\1/' | \
+    fzf --height 40% --reverse --prompt="AWS Profile: ")
+
+  if [[ -n $profile ]]; then
+    export AWS_PROFILE="$profile"
+    echo "AWS_PROFILE set to: $profile"
+  fi
+}
+
+# Bind to a key (Ctrl-F)
+bindkey -s '^F' 'aws_profile_select\n'
+
+# Also add standard completion
+_aws_profiles() {
+  local profiles
+  profiles=($(grep '^\[profile ' ~/.aws/config | sed 's/\[profile \(.*\)\]/\1/'))
+  _describe 'aws profiles' profiles
+}
+compdef _aws_profiles -value-,AWS_PROFILE,-default-

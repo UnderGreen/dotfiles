@@ -1,8 +1,0 @@
-alias grep="/opt/homebrew/bin/ggrep"
-alias ls="ls --color=auto -F"
-alias vim="nvim"
-alias dsync="~/.emacs.d/bin/doom sync"
-alias kcs="kubectl config use-context"
-export GOPATH="$HOME/go"
-export PATH="$PATH:$GOPATH/bin"
-export EDITOR="nvim"
