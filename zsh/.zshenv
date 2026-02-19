@@ -6,6 +6,7 @@ alias ccode='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
 
 export GOPATH="$HOME/go"
 export EDITOR="nvim"
+export PATH="$GOPATH/bin:$PATH"
 
 # Load local/private environment variables
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

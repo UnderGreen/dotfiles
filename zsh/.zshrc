@@ -30,6 +30,13 @@ if [[ -o interactive ]]; then
   # Starship prompt
   eval "$(starship init zsh)"
 
+  DISABLE_AUTO_TITLE="true"
+
+  iterm_tab_title() {
+    echo -ne "\e]0;${PWD##*/}\a"
+  }
+  add-zsh-hook precmd iterm_tab_title
+
   # fzf configuration
   source <(fzf --zsh)
   export FZF_CTRL_T_OPTS="--height 40% --exact --reverse --preview 'bat --color \"always\" {}'"

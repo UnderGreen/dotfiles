@@ -22,6 +22,7 @@ brew "ripgrep"
 brew "starship"
 brew "stow"
 brew "terraform"
+brew "uv"
 brew "zoxide"
 
 # Casks (GUI apps)
