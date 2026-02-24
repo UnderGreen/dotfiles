@@ -40,7 +40,7 @@ if [[ -o interactive ]]; then
   # fzf configuration
   source <(fzf --zsh)
   export FZF_CTRL_T_OPTS="--height 40% --exact --reverse --preview 'bat --color \"always\" {}'"
-  export FZF_CTRL_R_OPTS="--height 40% --reverse"
+  export FZF_CTRL_R_OPTS="--height 40%"
 
   # zoxide (smart cd)
   eval "$(zoxide init --cmd cd zsh)"
